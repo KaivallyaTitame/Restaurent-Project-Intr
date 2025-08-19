@@ -1,1 +1,67 @@
-<p>user-register works!</p>
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100"
+     style="background: url('https://images.unsplash.com/photo-1528605248644-14dd04022da1') center/cover no-repeat;">
+  
+  <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 380px; background: rgba(255,255,255,0.95);">
+    
+    <h3 class="text-center mb-3 fw-bold text-success">🍽️PuneDine</h3>
+    <p class="text-center text-muted mb-4">Register to explore restaurants & book your table</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+      <!-- Name -->
+      <div class="input-group mb-2">
+        <span class="input-group-text bg-success text-white"><i class="bi bi-person"></i></span>
+        <input type="text" class="form-control" formControlName="name" placeholder="Full Name">
+      </div>
+      <div *ngIf="f['name'].touched && f['name'].invalid" class="text-danger mb-2">
+        Name is required (min 3 characters)
+      </div>
+
+      <!-- Email -->
+      <div class="input-group mb-2">
+        <span class="input-group-text bg-success text-white"><i class="bi bi-envelope"></i></span>
+        <input type="email" class="form-control" formControlName="email" placeholder="Email">
+      </div>
+      <div *ngIf="f['email'].touched && f['email'].invalid" class="text-danger mb-2">
+        Enter a valid email
+      </div>
+
+      <!-- Password -->
+      <div class="input-group mb-2">
+        <span class="input-group-text bg-success text-white"><i class="bi bi-lock"></i></span>
+        <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password" placeholder="Password">
+        <button type="button" class="btn btn-outline-secondary" (click)="showPassword = !showPassword">
+          <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+        </button>
+      </div>
+      <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger mb-2">
+        Password is required (min 6 characters)
+      </div>
+
+      <!-- Role -->
+      <div class="input-group mb-3">
+        <span class="input-group-text bg-success text-white"><i class="bi bi-people"></i></span>
+        <select class="form-select" formControlName="role">
+          <option value="CUSTOMER">Customer</option>
+          <option value="STAFF">Restaurant Staff</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">Register & Start Booking</button>
+
+    </form>
+
+    <!-- Message -->
+    <div class="text-center mt-3" *ngIf="message">
+      <small [ngClass]="{'text-success': message.includes('✅'), 'text-danger': message.includes('❌')}">{{ message }}</small>
+    </div>
+
+    <!-- Login link -->
+    <div class="text-center mt-3">
+      <small>Already have an account? 
+        <a href="/login" class="text-success fw-bold">Login</a>
+      </small>
+    </div>
+
+  </div>
+</div>

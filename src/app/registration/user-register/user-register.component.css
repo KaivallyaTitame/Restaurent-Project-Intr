@@ -1,0 +1,23 @@
+/* Make card slightly elevated and rounded */
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+
+/* Input focus styling */
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+  border-color: #198754;
+}
+
+/* Password toggle button styling */
+.input-group .btn-outline-secondary {
+  border-left: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .card {
+    padding: 1.5rem;
+  }
+}

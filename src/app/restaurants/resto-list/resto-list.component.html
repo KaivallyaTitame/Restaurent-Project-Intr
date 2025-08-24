@@ -1,0 +1,32 @@
+<div class="restaurant-list-container">
+  <h2>Available Restaurants</h2>
+  
+  <div *ngIf="loading" class="loading">
+    Loading restaurants...
+  </div>
+
+  <div *ngIf="!loading" class="restaurant-grid">
+    <div 
+      *ngFor="let restaurant of restaurants" 
+      class="restaurant-card"
+      (click)="onRestaurantSelect(restaurant)">
+      
+      <div class="restaurant-header">
+        <h3>{{ restaurant.name }}</h3>
+        <div class="rating">
+          <span class="stars">★</span>
+          <span>{{ restaurant.rating }}</span>
+        </div>
+      </div>
+      
+      <div class="restaurant-details">
+        <p class="cuisine">{{ restaurant.cuisine }} Cuisine</p>
+            <button class="book-btn" (click)="onRestaurantSelect(restaurant)">Book Table</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && restaurants.length === 0" class="no-restaurants">
+    No restaurants available at the moment.
+  </div>
+</div>

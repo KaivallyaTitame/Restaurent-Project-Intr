@@ -1,1 +1,101 @@
-<p>book-table works!</p>
+<div class="booking-container">
+  <div class="header">
+    <h2>Table Bookings</h2>
+    <button class="add-btn" (click)="toggleForm()">
+      {{ showForm ? 'Cancel' : 'New Booking' }}
+    </button>
+  </div>
+
+  <!-- Booking Form -->
+  <div *ngIf="showForm" class="booking-form">
+    <h3>Create New Booking</h3>
+    <form (ngSubmit)="onSubmit()" #bookingForm="ngForm">
+      <div class="form-group">
+        <label for="customerName">Customer Name:</label>
+        <input 
+          type="text" 
+          id="customerName"
+          [(ngModel)]="newBooking.customerName"
+          name="customerName"
+          required
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date:</label>
+        <input 
+          type="date" 
+          id="date"
+          [(ngModel)]="newBooking.date"
+          name="date"
+          required
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="time">Time:</label>
+        <input 
+          type="time" 
+          id="time"
+          [(ngModel)]="newBooking.time"
+          name="time"
+          required
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="guests">Number of Guests:</label>
+        <input 
+          type="number" 
+          id="guests"
+          [(ngModel)]="newBooking.guests"
+          name="guests"
+          min="1"
+          max="20"
+          required
+          class="form-control">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="!bookingForm.form.valid || loading" class="submit-btn">
+          {{ loading ? 'Creating...' : 'Create Booking' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Bookings List -->
+  <div class="bookings-list">
+    <div *ngIf="loading && !showForm" class="loading">
+      Loading bookings...
+    </div>
+
+    <div *ngIf="!loading && bookings.length === 0" class="no-bookings">
+      No bookings found. Create your first booking!
+    </div>
+
+    <div *ngIf="!loading && bookings.length > 0" class="bookings-grid">
+      <div *ngFor="let booking of bookings" class="booking-card">
+        <div class="booking-header">
+          <h4>{{ booking.customerName }}</h4>
+          <button class="delete-btn" (click)="deleteBooking(booking)">×</button>
+        </div>
+        
+        <div class="booking-details">
+          <div class="detail-item">
+            <span class="label">Date:</span>
+            <span class="value">{{ booking.date }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Time:</span>
+            <span class="value">{{ booking.time }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Guests:</span>
+            <span class="value">{{ booking.guests }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

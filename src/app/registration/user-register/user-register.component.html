@@ -1,67 +1,95 @@
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100"
-     style="background: url('https://images.unsplash.com/photo-1528605248644-14dd04022da1') center/cover no-repeat;">
-  
-  <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 380px; background: rgba(255,255,255,0.95);">
-    
-    <h3 class="text-center mb-3 fw-bold text-success">🍽️PuneDine</h3>
-    <p class="text-center text-muted mb-4">Register to explore restaurants & book your table</p>
+<div class="registration-container">
+  <div class="header">
+    <h2>User Registration</h2>
+    <div class="header-buttons">
+      <button class="toggle-btn" (click)="toggleForm()">
+        {{ showForm ? 'Cancel' : 'Register New User' }}
+      </button>
+      <button class="toggle-btn secondary" (click)="toggleUsersList()">
+        {{ showUsers ? 'Hide Users' : 'Show All Users' }}
+      </button>
+    </div>
+  </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="register()">
+  <!-- Message Display -->
+  <div *ngIf="message" class="message" [ngClass]="messageType">
+    {{ message }}
+  </div>
 
+  <!-- Registration Form -->
+  <div *ngIf="showForm" class="registration-form">
+    <h3>Create New User Account</h3>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      
       <!-- Name -->
-      <div class="input-group mb-2">
-        <span class="input-group-text bg-success text-white"><i class="bi bi-person"></i></span>
-        <input type="text" class="form-control" formControlName="name" placeholder="Full Name">
-      </div>
-      <div *ngIf="f['name'].touched && f['name'].invalid" class="text-danger mb-2">
-        Name is required (min 3 characters)
+      <div class="form-group">
+        <label for="name">Full Name:</label>
+        <input id="name" type="text" formControlName="name" class="form-control" placeholder="Enter full name">
+        <div *ngIf="f['name'].touched && f['name'].invalid" class="text-danger">
+          Name is required (min 3 chars).
+        </div>
       </div>
 
       <!-- Email -->
-      <div class="input-group mb-2">
-        <span class="input-group-text bg-success text-white"><i class="bi bi-envelope"></i></span>
-        <input type="email" class="form-control" formControlName="email" placeholder="Email">
-      </div>
-      <div *ngIf="f['email'].touched && f['email'].invalid" class="text-danger mb-2">
-        Enter a valid email
+      <div class="form-group">
+        <label for="email">Email Address:</label>
+        <input id="email" type="email" formControlName="email" class="form-control" placeholder="Enter email">
+        <div *ngIf="f['email'].touched && f['email'].invalid" class="text-danger">
+          Enter a valid email.
+        </div>
       </div>
 
       <!-- Password -->
-      <div class="input-group mb-2">
-        <span class="input-group-text bg-success text-white"><i class="bi bi-lock"></i></span>
-        <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password" placeholder="Password">
-        <button type="button" class="btn btn-outline-secondary" (click)="showPassword = !showPassword">
-          <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-        </button>
-      </div>
-      <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger mb-2">
-        Password is required (min 6 characters)
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input id="password" type="password" formControlName="password" class="form-control" placeholder="Password">
+        <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger">
+          Password is required (min 6 chars).
+        </div>
       </div>
 
       <!-- Role -->
-      <div class="input-group mb-3">
-        <span class="input-group-text bg-success text-white"><i class="bi bi-people"></i></span>
-        <select class="form-select" formControlName="role">
-          <option value="CUSTOMER">Customer</option>
-          <option value="STAFF">Restaurant Staff</option>
+      <div class="form-group">
+        <label for="role">Role:</label>
+        <select id="role" formControlName="role" class="form-control">
+          <option *ngFor="let role of availableRoles" [value]="role">
+            {{ role | titlecase }}
+          </option>
         </select>
       </div>
 
-      <button type="submit" class="btn btn-success w-100">Register & Start Booking</button>
-
+      <div class="form-actions">
+        <button type="submit" [disabled]="registerForm.invalid || loading" class="submit-btn">
+          {{ loading ? 'Registering...' : 'Register User' }}
+        </button>
+      </div>
     </form>
+  </div>
 
-    <!-- Message -->
-    <div class="text-center mt-3" *ngIf="message">
-      <small [ngClass]="{'text-success': message.includes('✅'), 'text-danger': message.includes('❌')}">{{ message }}</small>
+  <!-- Users List -->
+  <div *ngIf="showUsers" class="users-list">
+    <h3>Registered Users</h3>
+    
+    <div *ngIf="loading" class="loading">Loading users...</div>
+    <div *ngIf="!loading && users.length === 0" class="no-users">No users registered yet.</div>
+
+    <div *ngIf="!loading && users.length > 0" class="users-grid">
+      <div *ngFor="let user of users" class="user-card">
+        <div class="user-header">
+          <h4>{{ user.name }}</h4>
+          <span class="role-badge" [ngClass]="user.role">{{ user.role | titlecase }}</span>
+        </div>
+        <div class="user-details">
+          <div class="detail-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ user.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Role:</span>
+            <span class="value">{{ user.role | titlecase }}</span>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Login link -->
-    <div class="text-center mt-3">
-      <small>Already have an account? 
-        <a href="/login" class="text-success fw-bold">Login</a>
-      </small>
-    </div>
-
   </div>
 </div>

@@ -1,5 +1,20 @@
+<div class="app-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>{{ title }}</h1>
+    </div>
+    <div class="nav-links">
+      <a routerLink="/restaurants" routerLinkActive="active">Restaurants</a>
+      <a routerLink="/booking" routerLinkActive="active">Bookings</a>
+      <a routerLink="/registration" routerLinkActive="active">Registration</a>
+    </div>
+  </nav>
 
-<router-outlet></router-outlet>
-<app-user-register></app-user-register>
-<app-resto-list></app-resto-list>
-<app-book-table></app-book-table>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Restaurant Management System. All rights reserved.</p>
+  </footer>
+</div>

@@ -1,41 +1,59 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserRegistration } from '../user-registration.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Registration } from '../models/registration.model';
 import { RegisterService } from '../services/register.service';
 
 @Component({
   selector: 'app-user-register',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-register.component.html',
   styleUrls: ['./user-register.component.css']
 })
 export class UserRegisterComponent implements OnInit {
-  users: UserRegistration[] = [];
+  users: Registration[] = [];
   registerForm!: FormGroup;
-  loading = false;
+
+
   showForm = false;
   showUsers = false;
   message = '';
-  messageType: 'success' | 'error' = 'success';
+  messageType: 'success' | 'error' | '' = '';
+  loading = false;
 
-  availableRoles = ['customer', 'admin', 'manager'];
+  
+  availableRoles: string[] = ['user', 'admin', 'manager'];
 
-  constructor(private fb: FormBuilder, private registerService: RegisterService) {}
+  constructor(
+    private fb: FormBuilder,
+    private registerService: RegisterService
+  ) {}
 
   ngOnInit(): void {
-    this.initForm();
     this.loadUsers();
+    this.initForm();
   }
 
-  private initForm(): void {
+  initForm(): void {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['customer', Validators.required]
+      confirmPassword: ['', Validators.required],
+      role: ['user'] 
     });
+  }
+
+  
+  get f() {
+    return this.registerForm.controls;
+  }
+
+  toggleForm(): void {
+    this.showForm = !this.showForm;
+    this.message = '';
+  }
+
+  toggleUsersList(): void {
+    this.showUsers = !this.showUsers;
   }
 
   loadUsers(): void {
@@ -45,58 +63,60 @@ export class UserRegisterComponent implements OnInit {
         this.users = users;
         this.loading = false;
       },
-      error: (error) => {
-        console.error('Error loading users:', error);
+      error: () => {
+        this.message = 'Failed to load users';
+        this.messageType = 'error';
         this.loading = false;
       }
     });
-  }
-
-  toggleForm(): void {
-    this.showForm = !this.showForm;
-    if (!this.showForm) {
-      this.registerForm.reset({ role: 'customer' });
-    }
-    this.clearMessage();
-  }
-
-  toggleUsersList(): void {
-    this.showUsers = !this.showUsers;
   }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) return;
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    const newUser = new Registration(this.registerForm.value);
+
+    if (!newUser.isValid()) {
+      this.message = 'Invalid form data';
+      this.messageType = 'error';
+      return;
+    }
 
     this.loading = true;
-    const newUser: UserRegistration = this.registerForm.value;
-
-    this.registerService.registerUser(newUser).subscribe({
+    this.registerService.createUser(newUser).subscribe({
       next: (user) => {
         this.users.push(user);
-        this.registerForm.reset({ role: 'customer' });
+        this.message = 'User registered successfully!';
+        this.messageType = 'success';
+        this.registerForm.reset({ role: 'user' });
         this.showForm = false;
         this.loading = false;
-        this.showMessage('User registered successfully!', 'success');
       },
-      error: (error) => {
-        console.error('Error registering user:', error);
-        this.showMessage(error.message || 'Error registering user', 'error');
+      error: () => {
+        this.message = 'Error registering user';
+        this.messageType = 'error';
         this.loading = false;
       }
     });
   }
 
-  private showMessage(message: string, type: 'success' | 'error'): void {
-    this.message = message;
-    this.messageType = type;
-    setTimeout(() => this.clearMessage(), 5000);
-  }
-
-  private clearMessage(): void {
-    this.message = '';
-  }
-
-  get f() {
-    return this.registerForm.controls;
+  deleteUser(user: Registration): void {
+    if (confirm(`Delete user ${user.email}?`)) {
+      this.registerService.deleteUser(user.email).subscribe({
+        next: (success) => {
+          if (success) {
+            this.users = this.users.filter(u => u.email !== user.email);
+            this.message = 'User deleted';
+            this.messageType = 'success';
+          }
+        },
+        error: () => {
+          this.message = 'Failed to delete user';
+          this.messageType = 'error';
+        }
+      });
+    }
   }
 }

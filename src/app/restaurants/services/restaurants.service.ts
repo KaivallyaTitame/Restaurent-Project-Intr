@@ -6,25 +6,44 @@ import { Restaurant } from '../models/restaurants.model';
   providedIn: 'root'
 })
 export class RestaurantsService {
-  
+
   private staticRestaurants: Restaurant[] = [
-{ id: 1, name: 'Shabree', cuisine: 'Authentic Maharashtrian Thali', rating: 4.6 },
-{ id: 2, name: 'Durvankur Dining Hall', cuisine: 'Maharashtrian Thali', rating: 4.5 },
-{ id: 3, name: 'Asha Dining Hall', cuisine: 'Traditional Maharashtrian', rating: 4.4 },
-{ id: 4, name: 'Hotel Shreyas', cuisine: 'Veg Maharashtrian', rating: 4.7 },
-{ id: 5, name: 'Mathura Pure Veg', cuisine: 'Maharashtrian & Satvik', rating: 4.3 }
+new Restaurant({ id: 1, name: 'Spice Villa', location: 'Mumbai', cuisine: 'Indian', rating: 4.5 }),
+new Restaurant({ id: 2, name: 'Pasta Paradise', location: 'Pune', cuisine: 'Italian', rating: 4.2 }),
+new Restaurant({ id: 3, name: 'Burger Hub', location: 'Pune', cuisine: 'Fast Food', rating: 4.0 }),
+new Restaurant({ id: 4, name: 'Curry Culture', location: 'Pune', cuisine: 'North Indian', rating: 4.3 }),
+new Restaurant({ id: 5, name: 'Sushi World', location: 'Pune', cuisine: 'Japanese', rating: 4.4 }),
+new Restaurant({ id: 6, name: 'Tandoori Tales', location: 'Pune', cuisine: 'Mughlai', rating: 4.1 }),
+new Restaurant({ id: 7, name: 'Green Garden', location: 'Pune', cuisine: 'Vegan', rating: 4.6 }),
+
   ];
 
   constructor() { }
 
   getAllRestaurants(): Observable<Restaurant[]> {
-   
     return of(this.staticRestaurants);
   }
 
-  getRestaurantById(id: number): Observable<Restaurant | undefined> {
-  
-    const restaurant = this.staticRestaurants.find(r => r.id === id);
+  createRestaurant(restaurant: Restaurant): Observable<Restaurant> {
+    restaurant.id = this.staticRestaurants.length + 1;
+    this.staticRestaurants.push(restaurant);
     return of(restaurant);
+  }
+
+  updateRestaurant(restaurant: Restaurant): Observable<Restaurant> {
+    const index = this.staticRestaurants.findIndex(r => r.id === restaurant.id);
+    if (index !== -1) {
+      this.staticRestaurants[index] = restaurant;
+    }
+    return of(restaurant);
+  }
+
+  deleteRestaurant(id: number): Observable<boolean> {
+    const index = this.staticRestaurants.findIndex(r => r.id === id);
+    if (index !== -1) {
+      this.staticRestaurants.splice(index, 1);
+      return of(true);
+    }
+    return of(false);
   }
 }

@@ -8,12 +8,7 @@ import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'app-resto-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,        
-    HttpClientModule     
-  ],
+  standalone: false,
   templateUrl: './resto-list.component.html',
   styleUrls: ['./resto-list.component.css'],
   providers: [RestaurantsService] 

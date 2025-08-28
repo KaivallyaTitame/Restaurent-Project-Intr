@@ -1,18 +1,28 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RestoListComponent } from './restaurants/resto-list/resto-list.component';
-import { UserRegisterComponent } from './registration/user-register/user-register.component';
-import { BookTableComponent } from './booking/book-table/book-table.component';
-export const routes: Routes = [
-  { path: '', redirectTo: '/restaurents', pathMatch: 'full' },
-  { path: 'registration', component: UserRegisterComponent }, // ✅ standalone
-  { path: 'restaurents', component: RestoListComponent },     // ✅ standalone
-  { path: 'booking', component: BookTableComponent },           // ✅ standalone
-  { path: '**', redirectTo: '/restaurents' }
+
+const routes: Routes = [
+  { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
+  {
+    path: 'restaurants',
+    loadChildren: () =>
+      import('./restaurants/restaurants.module').then(m => m.RestaurantsModule)
+  },
+  {
+    path: 'booking',
+    loadChildren: () =>
+      import('./booking/booking.module').then(m => m.BookingModule)
+  },
+  {
+    path: 'registration',
+    loadChildren: () =>
+      import('./registration/registration.module').then(m => m.RegistrationModule)
+  },
+  { path: '**', redirectTo: '/restaurants' }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

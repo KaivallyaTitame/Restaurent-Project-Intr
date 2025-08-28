@@ -1,24 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Booking } from '../booking.model';
+import { Booking } from '../models/booking.model';
 import { BookingService } from '../services/booking.service';
 
 @Component({
   selector: 'app-book-table',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './book-table.component.html',
   styleUrls: ['./book-table.component.css']
 })
 export class BookTableComponent implements OnInit {
   bookings: Booking[] = [];
-  newBooking: Booking = {
-    customerName: '',
-    date: '',
-    time: '',
-    guests: 1
-  };
+  newBooking: Booking = new Booking();  
   loading = false;
   showForm = false;
 
@@ -32,7 +23,7 @@ export class BookTableComponent implements OnInit {
     this.loading = true;
     this.bookingService.getAllBookings().subscribe({
       next: (bookings) => {
-        this.bookings = bookings;
+        this.bookings = bookings.map(b => new Booking(b)); 
         this.loading = false;
       },
       error: (error) => {
@@ -45,20 +36,19 @@ export class BookTableComponent implements OnInit {
   toggleForm(): void {
     this.showForm = !this.showForm;
     if (!this.showForm) {
-      this.resetForm();
+      this.newBooking.reset(); 
     }
   }
 
   onSubmit(): void {
-    if (this.isFormValid()) {
+    if (this.newBooking.isValid()) {
       this.loading = true;
       this.bookingService.createBooking(this.newBooking).subscribe({
         next: (booking) => {
-          this.bookings.push(booking);
-          this.resetForm();
+          this.bookings.push(new Booking(booking));
+          this.newBooking.reset();
           this.showForm = false;
           this.loading = false;
-          console.log('Booking created successfully:', booking);
         },
         error: (error) => {
           console.error('Error creating booking:', error);
@@ -73,10 +63,9 @@ export class BookTableComponent implements OnInit {
       this.bookingService.deleteBooking(booking.customerName, booking.date).subscribe({
         next: (success) => {
           if (success) {
-            this.bookings = this.bookings.filter(b => 
+            this.bookings = this.bookings.filter(b =>
               !(b.customerName === booking.customerName && b.date === booking.date)
             );
-            console.log('Booking deleted successfully');
           }
         },
         error: (error) => {
@@ -84,21 +73,5 @@ export class BookTableComponent implements OnInit {
         }
       });
     }
-  }
-
-  private isFormValid(): boolean {
-    return !!(this.newBooking.customerName && 
-              this.newBooking.date && 
-              this.newBooking.time && 
-              this.newBooking.guests > 0);
-  }
-
-  private resetForm(): void {
-    this.newBooking = {
-      customerName: '',
-      date: '',
-      time: '',
-      guests: 1
-    };
   }
 }

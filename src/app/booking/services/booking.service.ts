@@ -15,6 +15,7 @@ export class BookingService {
   createBooking(b: Booking): Observable<Booking> {
     const payload = {
       customerName: b.customerName,
+      restaurantId: b.restaurantId,
       date: b.date,
       time: b.time,
       guests: b.guests

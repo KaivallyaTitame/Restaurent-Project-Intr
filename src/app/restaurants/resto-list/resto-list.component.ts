@@ -24,11 +24,12 @@ export class RestoListComponent implements OnInit {
   loadRestaurants(): void {
     this.restaurantsService.getAllRestaurants().subscribe({
       next: (restaurants: Restaurant[]) => {
+        console.log("✅ Restaurants from backend:", restaurants);
         this.restaurants = restaurants;
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading restaurants:', error);
+        console.error('❌ Error loading restaurants:', error);
         this.loading = false;
       }
     });

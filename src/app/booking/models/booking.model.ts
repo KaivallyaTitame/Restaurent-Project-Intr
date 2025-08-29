@@ -1,6 +1,7 @@
 export class Booking {
   id?: number; 
   customerName: string;
+  restaurantId: number = 1;
   date: string;
   time: string;
   guests: number;
@@ -24,6 +25,7 @@ export class Booking {
 
   reset(): void {
     this.customerName = '';
+     this.restaurantId = 1;
     this.date = '';
     this.time = '';
     this.guests = 1;

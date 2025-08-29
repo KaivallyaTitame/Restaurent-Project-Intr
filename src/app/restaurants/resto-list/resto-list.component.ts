@@ -1,17 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-
+import { Router } from '@angular/router';
 import { Restaurant } from '../models/restaurants.model';
 import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'app-resto-list',
-  standalone: false,
   templateUrl: './resto-list.component.html',
-  styleUrls: ['./resto-list.component.css'],
-  providers: [RestaurantsService] 
+  styleUrls: ['./resto-list.component.css']
 })
 export class RestoListComponent implements OnInit {
   restaurants: Restaurant[] = [];
@@ -28,11 +23,11 @@ export class RestoListComponent implements OnInit {
 
   loadRestaurants(): void {
     this.restaurantsService.getAllRestaurants().subscribe({
-      next: (restaurants) => {
+      next: (restaurants: Restaurant[]) => {
         this.restaurants = restaurants;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading restaurants:', error);
         this.loading = false;
       }
@@ -40,9 +35,6 @@ export class RestoListComponent implements OnInit {
   }
 
   onRestaurantSelect(restaurant: Restaurant): void {
-    console.log('Selected restaurant:', restaurant);
-
-    
     this.router.navigate(['/booking'], { queryParams: { id: restaurant.id } });
   }
 }

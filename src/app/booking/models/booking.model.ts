@@ -1,15 +1,25 @@
 export class Booking {
-  customerName: string = '';
-  date: string = '';
-  time: string = '';
-  guests: number = 1;
+  id?: number; 
+  customerName: string;
+  date: string;
+  time: string;
+  guests: number;
 
   constructor(init?: Partial<Booking>) {
-    Object.assign(this, init);
+    this.id = init?.id;
+    this.customerName = init?.customerName || '';
+    this.date = init?.date || '';
+    this.time = init?.time || '';
+    this.guests = init?.guests ?? 1;
   }
 
   isValid(): boolean {
-    return !!(this.customerName && this.date && this.time && this.guests > 0);
+    return (
+      this.customerName.trim().length > 0 &&
+      this.date.trim().length > 0 &&
+      this.time.trim().length > 0 &&
+      this.guests > 0
+    );
   }
 
   reset(): void {

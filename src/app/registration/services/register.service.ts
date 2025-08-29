@@ -1,33 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Registration } from '../models/registration.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
+  private baseUrl = environment.apiUrl;
 
-  private staticUsers: Registration[] = [
-    new Registration({ name: 'Alice', email: 'alice@mail.com', password: 'secret', confirmPassword: 'secret' }),
-    new Registration({ name: 'Bob', email: 'bob@mail.com', password: 'mypassword', confirmPassword: 'mypassword' })
-  ];
+  constructor(private http: HttpClient) {}
 
   getAllUsers(): Observable<Registration[]> {
-    return of(this.staticUsers.map(u => new Registration(u)));
+    return this.http.get<Registration[]>(`${this.baseUrl}/user`);
   }
 
   createUser(user: Registration): Observable<Registration> {
-    const newUser = new Registration(user);
-    this.staticUsers.push(newUser);
-    return of(newUser);
+    const payload = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      role: user.role
+    };
+    return this.http.post<Registration>(`${this.baseUrl}/user/register`, payload);
   }
 
-  deleteUser(email: string): Observable<boolean> {
-    const index = this.staticUsers.findIndex(u => u.email === email);
-    if (index !== -1) {
-      this.staticUsers.splice(index, 1);
-      return of(true);
-    }
-    return of(false);
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/user/delete/${id}`);
   }
 }

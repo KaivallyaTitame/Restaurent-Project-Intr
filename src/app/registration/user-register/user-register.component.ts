@@ -12,14 +12,12 @@ export class UserRegisterComponent implements OnInit {
   users: Registration[] = [];
   registerForm!: FormGroup;
 
-
   showForm = false;
   showUsers = false;
   message = '';
   messageType: 'success' | 'error' | '' = '';
   loading = false;
 
-  
   availableRoles: string[] = ['user', 'admin', 'manager'];
 
   constructor(
@@ -37,12 +35,10 @@ export class UserRegisterComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
-      role: ['user'] 
+      role: ['user']
     });
   }
 
-  
   get f() {
     return this.registerForm.controls;
   }
@@ -87,7 +83,7 @@ export class UserRegisterComponent implements OnInit {
     this.loading = true;
     this.registerService.createUser(newUser).subscribe({
       next: (user) => {
-        this.users.push(user);
+        this.users.push(user); 
         this.message = 'User registered successfully!';
         this.messageType = 'success';
         this.registerForm.reset({ role: 'user' });
@@ -103,14 +99,18 @@ export class UserRegisterComponent implements OnInit {
   }
 
   deleteUser(user: Registration): void {
+    if (!user.id) {
+      this.message = 'User ID missing, cannot delete';
+      this.messageType = 'error';
+      return;
+    }
+
     if (confirm(`Delete user ${user.email}?`)) {
-      this.registerService.deleteUser(user.email).subscribe({
-        next: (success) => {
-          if (success) {
-            this.users = this.users.filter(u => u.email !== user.email);
-            this.message = 'User deleted';
-            this.messageType = 'success';
-          }
+      this.registerService.deleteUser(user.id).subscribe({
+        next: () => {
+          this.users = this.users.filter(u => u.id !== user.id);
+          this.message = 'User deleted';
+          this.messageType = 'success';
         },
         error: () => {
           this.message = 'Failed to delete user';

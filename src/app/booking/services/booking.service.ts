@@ -26,7 +26,11 @@ export class BookingService {
   }
 
   deleteBooking(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/booking/delete/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/booking/delete/${id}`,{
+      headers:{
+         'ngrok-skip-browser-warning': 'true'
+      }
+    });
   }
 
 

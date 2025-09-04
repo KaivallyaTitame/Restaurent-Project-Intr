@@ -13,7 +13,11 @@ export class RegisterService {
   constructor(private http: HttpClient) {}
 
   getAllUsers(): Observable<Registration[]> {
-    return this.http.get<Registration[]>(`${this.baseUrl}/user`);
+    return this.http.get<Registration[]>(`${this.baseUrl}/user`,{
+      headers:{
+         'ngrok-skip-browser-warning': 'true'
+      }
+    });
   }
 
   createUser(user: Registration): Observable<Registration> {

@@ -28,6 +28,9 @@
       
       <div class="restaurant-details">
         <p class="cuisine">{{ restaurant.cuisine }} Cuisine</p>
+        <p *ngIf="!restaurant.isValid()" class="invalid">
+          ⚠ Invalid restaurant data
+        </p>
         <button 
           type="button" 
           class="book-btn" 

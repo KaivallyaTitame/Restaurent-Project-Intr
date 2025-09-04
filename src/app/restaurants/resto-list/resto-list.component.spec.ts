@@ -1,15 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RestoListComponent } from './resto-list.component';
 
 describe('RestoListComponent', () => {
   let component: RestoListComponent;
   let fixture: ComponentFixture<RestoListComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [RestoListComponent]
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [RestoListComponent]
+    })
+    .compileComponents();
+    
     fixture = TestBed.createComponent(RestoListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

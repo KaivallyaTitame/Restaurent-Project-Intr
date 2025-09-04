@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { BookingRoutingModule } from './booking-routing.module';
+import { RouterModule, Routes } from '@angular/router';
 import { BookTableComponent } from './book-table/book-table.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+const routes: Routes = [
+  { path: '', component: BookTableComponent }
+];
 
 @NgModule({
-  declarations: [
-    BookTableComponent
-  ],
+  declarations: [BookTableComponent],
   imports: [
     CommonModule,
-    BookingRoutingModule
-  ],
-  exports : [
-    BookTableComponent
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forChild(routes)
   ]
 })
-export class BookingModule { }
+export class BookingModule {}
